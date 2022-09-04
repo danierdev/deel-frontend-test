@@ -34,3 +34,7 @@
 .ac-list__option:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
+
+.ac-highlight {
+  background-color: rgba(255, 255, 159, 0.5);
+}

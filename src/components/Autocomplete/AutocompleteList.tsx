@@ -16,10 +16,11 @@ export function AutocompleteList({ text, options, loading, onSelect }: Autocompl
         <div
           key={`ac-list-option-${idx}`}
           className="ac-list__option"
+          dangerouslySetInnerHTML={{
+            __html: highlight(text, option)
+          }}
           onClick={() => onSelect(option)}
-        >
-          {option}
-        </div>
+        />
       ))}
     </div>
   );
@@ -27,4 +28,9 @@ export function AutocompleteList({ text, options, loading, onSelect }: Autocompl
 
 function EmptyState({ message }: { message: string }) {
   return <div className="ac-list-empty">{message}</div>
+}
+
+function highlight(text: string, sentence: string) {
+  const wordRegex = new RegExp(`(${text})`, 'gi');
+  return sentence.replace(wordRegex, '<span class="ac-highlight">$1</span>');
 }
