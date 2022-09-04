@@ -1,14 +1,21 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-import { Autocomplete } from './components/Autocomplete';
 import { getCharacters } from './api/GotApi';
+import { Autocomplete } from './components/Autocomplete';
+import { debounce } from './utils';
 
 import './App.css';
+
+const DEBOUNCE_DELAY = 500;
 
 export function App() {
   const [text, setText] = useState('');
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const getDelayedOptions = useMemo(() => {
+    return debounce((value: string) => getOptions(value), DEBOUNCE_DELAY);
+  }, []);
 
   async function getOptions(text: string) {
     const names = await getCharacters(text);
@@ -20,8 +27,7 @@ export function App() {
     setText(text);
     setOptions([]);
     setLoading(true);
-
-    if (text.trim().length) getOptions(text);
+    if (text.trim().length) getDelayedOptions(text);
   }
 
   function handleSelect(option: string) {
