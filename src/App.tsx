@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Autocomplete } from './components/Autocomplete';
+import { getCharacters } from './api/GotApi';
 
 import './App.css';
 
@@ -10,7 +11,8 @@ export function App() {
   const [loading, setLoading] = useState(false);
 
   async function getOptions(text: string) {
-    setOptions(['Maria', 'Marcela', 'Dan', 'Rick', 'Glory']);
+    const names = await getCharacters(text);
+    setOptions(names);
     setLoading(false);
   }
 
@@ -30,7 +32,7 @@ export function App() {
   return (
     <div className="app">
       <header className="app__header">
-        <h2 className="app_title">Autocomplete</h2>
+        <h2 className="app_title">Search Game Of Thrones Characters</h2>
       </header>
       <main className="app__main">
         <div className="app_subtitle">
