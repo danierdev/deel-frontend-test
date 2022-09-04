@@ -11,7 +11,7 @@ export function AutocompleteList({ text, options, loading, onSelect }: Autocompl
   if (text && !options.length) return <EmptyState message="No results found" />
 
   return (
-    <div className="ac-list">
+    <div className="ac-list" data-testid="ac-list">
       {options.map((option, idx) => (
         <div
           key={`ac-list-option-${idx}`}
@@ -20,6 +20,7 @@ export function AutocompleteList({ text, options, loading, onSelect }: Autocompl
             __html: highlight(text, option)
           }}
           onClick={() => onSelect(option)}
+          data-testid="ac-list-option"
         />
       ))}
     </div>
@@ -32,5 +33,5 @@ function EmptyState({ message }: { message: string }) {
 
 function highlight(text: string, sentence: string) {
   const wordRegex = new RegExp(`(${text})`, 'gi');
-  return sentence.replace(wordRegex, '<span class="ac-highlight">$1</span>');
+  return sentence.replace(wordRegex, '<span class="ac-highlight" data-testid="ac-highlight">$1</span>');
 }
