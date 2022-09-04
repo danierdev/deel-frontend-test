@@ -1,11 +1,11 @@
 .ac-list {
-  border: 1px solid #3d9970;
+  border: 1px solid #aaa;
   border-radius: 4px;
   margin-top: 10px;
   width: 100%;
   flex-wrap: nowrap;
   max-height: 300px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .ac-list-empty {
@@ -15,12 +15,12 @@
 }
 
 .ac-input {
-  height: 26px;
+  box-sizing: border-box;
   font-size: 16px;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 5px;
   border: 1px solid #aaa;
-  padding: 5px 12px;
+  padding: 10px 20px;
 }
 
 .ac-list__option {
@@ -32,5 +32,5 @@
 }
 
 .ac-list__option:hover {
-  background-color: #eee;
+  background-color: rgba(255, 255, 255, 0.3);
 }

@@ -1,34 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+import { Autocomplete } from './components/Autocomplete';
+
+import './App.css';
+
+export function App() {
+  const [text, setText] = useState('');
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  async function getOptions(text: string) {
+    setOptions(['Maria', 'Marcela', 'Dan', 'Rick', 'Glory']);
+    setLoading(false);
+  }
+
+  async function handleChange(text: string) {
+    setText(text);
+    setOptions([]);
+    setLoading(true);
+
+    if (text.trim().length) getOptions(text);
+  }
+
+  function handleSelect(option: string) {
+    setText(option);
+    setOptions([]);
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="app">
+      <header className="app__header">
+        <h2 className="app_title">Autocomplete</h2>
+      </header>
+      <main className="app__main">
+        <div className="app_subtitle">
+          Please enter part of the name you are looking for
+        </div>
+        <div className="app__ac-wrapper">
+          <Autocomplete
+            text={text}
+            options={options}
+            loading={loading}
+            onChange={handleChange}
+            onSelect={handleSelect}
+          />
+        </div>
+      </main>
     </div>
-  )
+  );
 }
-
-export default App
