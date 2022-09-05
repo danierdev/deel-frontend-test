@@ -89,7 +89,7 @@ function App() {
   // It cannot return all de siblings without them to be wrapped
   // This breaks your app
   return (
-    <div>First content</div>
+    <div>App content</div>
     <LanguageSwitcher />
   )
 }
@@ -100,7 +100,7 @@ To correct this error we wrap the components in a fragment, you can import it fr
 ```html
 return (
   <>
-    <div>First content</div>
+    <div>App content</div>
     <LanguageSwitcher />
   </>
 )
@@ -108,97 +108,43 @@ return (
 
 ## 6. Give 3 examples of the HOC pattern.
 
+- React Router HOC:
+
+We can have access to router props (`history`, `location` ...) using `withRouter` HOC:
+
+```javascript
+const NavbarWithRouter = withRouter(Navbar);
+```
+
 - Redux connect HOC:
 
 We can wrap our component within Redux connect HOC, passing the state and dispatch as props to it:
 
 ```javascript
-import { connect } from 'react-redux'
-import { actions } from '../actions/some-feature'
-import SomeFeature from './SomeFeature'
-
-const mapStateToProps = (state) => {
-  return {
-    items: state.someFeature.list,
-    loading: state.someFeature.loading
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getItems() {
-      dispatch(actions.getItems)
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SomeFeature)
+// connect is a function that returns another function
+const enhance = connect(commentListSelector, commentListActions);
+// The returned function is a HOC, which returns a component that is connected
+// to the Redux store
+const ConnectedComment = enhance(CommentList);
 ```
-
-- React Router HOC:
-
-We can have access to router props using `withRouter` HOC:
-
-```javascript
-import { withRouter } from 'react-router-dom'
-import SomeFeature from './SomeFeature'
-
-export default withRouter(SomeFeature)
-```
-
-This way `SomeFeature` will receive some useful props, such as `history`, `match` or `location`.
 
 - A custom HOC
 
-Here is an example of a very simple HOC, that just tracks that the wrapped component is being rendered,
-using some external logger library.
+Here is an example of a very simple HOC, which allows adding functionality when the component did mount.
 
 ```javascript
-// The logger HOC
-import React from 'react'
-import logger from 'some-logger-library'
+export default function doesSomethingOnMount(Component) {
+  return class extends Component {
+    static displayName = Component.displayName || Component.name;
 
-export const withLogger = (WrappedComponent, name) => ({ ...props }) => {
-  logger.log('Rendering component', name)
-
-  return (
-    <WrappedComponent { ...props } />
-  )
+    componentDidMount() {
+      super.componentDidMount && super.componentDidMount();
+      // do your stuff here
+    }
+  };
 }
 ```
 
-Then some component which we want to track:
-
-```javascript
-import React from 'react'
-
-import { withLogger } from './logger'
-
-const SomeComponent = ({text}) => {
-  return (
-    <div>
-      This is some component with - { text }
-    </div>
-  )
-}
-
-export default withLogger(SomeComponent, 'some component')
-```
-
-Then we directly use the component from the parent:
-
-```javascript
-import React from 'react'
-import SomeComponent from './SomeComponent'
-
-function App() {
-  return (
-    <div className="App">
-      <SomeComponent text='Some text' />
-    </div>
-  );
-}
-```
 
 ## 7. What is the difference in handling exceptions in promises, callbacks and async...await?
 
@@ -210,7 +156,7 @@ One is the result itself, and the other is the error, in case something went wro
 For example:
 
 ```javascript
-getItems(options, (error, result) => {
+getUserInfo(userId, (error, result) => {
   if (error) {
     // handle the error in some way
   } else {
@@ -224,7 +170,7 @@ getItems(options, (error, result) => {
 Here the function returns a promise, and the way to handle errors is:
 
 ```javascript
-getItems(options)
+getUserInfo(args)
   .then(result => {
     // do something with result
   })
@@ -239,7 +185,7 @@ This is another way of handling promises, in a more straight-forward way:
 
 ```javascript
 try {
-  const result = await getItems(options)
+  const user = await getUserInfo(args)
   // do something with result
 } catch (error) {
   // handle the error in some way
@@ -271,31 +217,7 @@ It is an async method for performance reasons, so React updates all the states i
 You can give a component inline styles through `style` prop:
 
 ```javascript
-<div style={{ backgroundColor: '#ddd', padding: 0 }}>Some content</div>
-```
-
-### CSS Modules
-
-You can get an object with the styles from an actual CSS file, using modules.
-For example, given the CSS:
-
-```css
-.container {
-  padding: 12px;
-  font-size: 14px;
-  color: #0d0;
-}
-```
-
-We can import and use it as follows:
-
-```javascript
-import styles from './styles.module.css';
-
-...
-
-<div className={styles.container}>Some content</div>
-
+<main style={{ backgroundColor: '#ddd', padding: 0 }}>App content</main>
 ```
 
 ### Pure CSS
@@ -308,7 +230,31 @@ import './styles.css';
 
 ...
 
-<div className='container'>Some content</div>
+<main className="appWrapper">App content</main>
+```
+
+### CSS Modules / CSS in JS libraries (styled-components, emotion).
+
+You can get an object with the styles from an actual CSS file, using modules.
+For example, given the CSS:
+
+```css
+.appWrapper {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+}
+```
+
+We can import and use it as follows:
+
+```javascript
+import styles from './styles.module.css';
+
+...
+
+<main className={styles.appWrapper}>App content</main>
+
 ```
 
 ## 11. How to render an HTML string coming from the server
@@ -317,9 +263,9 @@ React automatically escapes the HTML tags, for security reasons. So, if I receiv
 an HTML string from the server and try to display it directly:
 
 ```javascript
-<div className='container'>
-  {htmlResponseString}
-</div>
+<main className='appWrapper'>
+  {htmlString}
+</main>
 ```
 
 the browser will print the HTML exactly as is, so no changes in the DOM will be reflected.
@@ -328,8 +274,8 @@ In order to be able to actually render the HTML received, we should use `dangero
 prop. For example:
 
 ```javascript
-<div
-  className='container'
-  dangerouslySetInnerHTML={{ __html: htmlResponseString }}
+<main
+  className='appWrapper'
+  dangerouslySetInnerHTML={{ __html: htmlString }}
 />
 ```
