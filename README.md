@@ -1,5 +1,7 @@
 # Autocomplete Component
 
+![Preview Autocomplete](preview.png?raw=true "Autocomplete Page")
+
 This repository has an Autocomplete component with the following features.
 
 - Debounce: Configurable debounce method to avoid requests when fast typing.
