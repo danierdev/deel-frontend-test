@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 
-import { getCharacters } from './api/GotApi';
-import { Autocomplete } from './components/Autocomplete';
-import { debounce } from './utils';
+import { getCharacters } from '../../api/GotApi';
+import { Autocomplete } from '../Autocomplete';
+import { debounce } from '../../utils';
 
 import './App.css';
 

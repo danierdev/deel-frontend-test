@@ -7,7 +7,7 @@ const mocks: MockMethod[] = [
     method: 'get',
     response: ({ query }) => {
       return characters.filter(
-        (item) => item.name.toLowerCase().includes(query.name)
+        (item) => item.name.toLowerCase().includes(query.name.toLowerCase())
       );
     }
   },
